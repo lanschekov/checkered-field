@@ -9,6 +9,10 @@ BLACK_COLOR = (0, 0, 0)
 WHITE_COLOR = (255, 255, 255)
 
 
+def opposite_cell(cell: WHITE | BLACK) -> BLACK | WHITE:
+    return WHITE if cell is BLACK else BLACK
+
+
 class Board:
     def __init__(self, width: int, height: int):
         self.width = width
@@ -61,10 +65,12 @@ class Board:
                and self.y <= y <= self.y + self.height * self.cell_size
 
     def on_click(self, cell_row: int, cell_col: int) -> None:
-        if self.board[cell_row - 1][cell_col - 1] is BLACK:
-            self.board[cell_row - 1][cell_col - 1] = WHITE
-        else:
-            self.board[cell_row - 1][cell_col - 1] = BLACK
+        for col in range(self.width):
+            self.board[cell_row - 1][col] = opposite_cell(self.board[cell_row - 1][col])
+        for row in range(self.height):
+            self.board[row][cell_col - 1] = opposite_cell(self.board[row][cell_col - 1])
+
+        self.board[cell_row - 1][cell_col - 1] = opposite_cell(self.board[cell_row - 1][cell_col - 1])
 
 
 if __name__ == '__main__':
