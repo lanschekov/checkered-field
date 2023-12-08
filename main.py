@@ -4,16 +4,36 @@ import pygame
 from pygame import Surface, SurfaceType
 
 BLACK = 0
-WHITE = 1
+RED = 1
+BLUE = 2
+
 BLACK_COLOR = (0, 0, 0)
 WHITE_COLOR = (255, 255, 255)
+RED_COLOR = (255, 0, 0)
+BLUE_COLOR = (0, 0, 255)
+
+
+def get_cell_color(cell: BLACK | RED | BLUE):
+    if cell is BLACK:
+        return RED_COLOR
+    if cell is RED:
+        return BLUE_COLOR
+    return BLACK_COLOR
+
+
+def get_cell(cell: BLACK | RED | BLUE) -> RED | BLUE | BLACK:
+    if cell is BLACK:
+        return RED
+    if cell is RED:
+        return BLUE
+    return BLACK
 
 
 class Board:
     def __init__(self, width: int, height: int):
         self.width = width
         self.height = height
-        self.board = [[BLACK] * width for _ in range(height)]
+        self.board = [[BLUE] * width for _ in range(height)]
         # значения по умолчанию
         self.x = 10
         self.y = 10
@@ -34,7 +54,7 @@ class Board:
                 pygame.draw.rect(screen, WHITE_COLOR,
                                  (cur_x, cur_y, self.cell_size, self.cell_size), width=1)
                 # Cell pouring
-                pygame.draw.rect(screen, BLACK_COLOR if cell is BLACK else WHITE_COLOR,
+                pygame.draw.rect(screen, get_cell_color(cell),
                                  (cur_x + 1, cur_y + 1, self.cell_size - 2, self.cell_size - 2), width=0)
 
                 cur_x += self.cell_size
@@ -61,10 +81,7 @@ class Board:
                and self.y <= y <= self.y + self.height * self.cell_size
 
     def on_click(self, cell_row: int, cell_col: int) -> None:
-        if self.board[cell_row - 1][cell_col - 1] is BLACK:
-            self.board[cell_row - 1][cell_col - 1] = WHITE
-        else:
-            self.board[cell_row - 1][cell_col - 1] = BLACK
+        self.board[cell_row - 1][cell_col - 1] = get_cell(self.board[cell_row - 1][cell_col - 1])
 
 
 if __name__ == '__main__':
