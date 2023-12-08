@@ -1,4 +1,4 @@
-from math import ceil
+from math import floor
 
 import pygame
 from pygame import Surface, SurfaceType
@@ -62,26 +62,26 @@ class Board:
             cur_y += self.cell_size
 
     def get_click(self, x: int, y: int) -> None:
-        cell = self.get_cell(x, y)
+        cell = self.get_cell(y, x)
         if not cell:
             return
         self.on_click(*cell)
 
-    def get_cell(self, x: int, y: int) -> tuple[int, int] | None:
-        if not self.check_click(x, y):
+    def get_cell(self, y: int, x: int) -> tuple[int, int] | None:
+        if not self.check_click(y, x):
             return None
-        rel_x = x - self.x
         rel_y = y - self.y
-        cell_row = ceil(rel_y / self.cell_size)
-        cell_col = ceil(rel_x / self.cell_size)
+        rel_x = x - self.x
+        cell_row = floor(rel_y / self.cell_size)
+        cell_col = floor(rel_x / self.cell_size)
         return cell_row, cell_col
 
-    def check_click(self, x: int, y: int) -> bool:
+    def check_click(self, y: int, x: int) -> bool:
         return self.x <= x <= self.x + self.width * self.cell_size \
                and self.y <= y <= self.y + self.height * self.cell_size
 
     def on_click(self, cell_row: int, cell_col: int) -> None:
-        self.board[cell_row - 1][cell_col - 1] = get_cell(self.board[cell_row - 1][cell_col - 1])
+        self.board[cell_row][cell_col] = get_cell(self.board[cell_row][cell_col])
 
 
 if __name__ == '__main__':
